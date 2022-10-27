@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useSettings } from "../../context/settingsContext";
 import { TaskModel, TaskPriority, TaskStatus } from "../../models/TaskModel";
 import { getStatusName } from "../task-list/utils";
-import { filterOutEnumNumbers } from "./util";
+import { filterOutEnumNumbers, getAllowedColumns } from "./util";
 
 type TaskFormProps = {
   task?: TaskModel;
@@ -11,6 +12,7 @@ type TaskFormProps = {
 };
 export default function TaskForm(props: TaskFormProps) {
   const { task, columnId, onSubmit, onCancel } = props;
+  const boardSettings = useSettings();
 
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
@@ -34,6 +36,11 @@ export default function TaskForm(props: TaskFormProps) {
   const inputClasses =
     "block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-blue-500 sm:text-sm";
 
+  const isEdit = !!task;
+  const allowedColumns = getAllowedColumns(
+    boardSettings!,
+    isEdit ? columnId : undefined
+  );
   return (
     <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-4">
       <div className="flex flex-col gap-2">
@@ -91,7 +98,7 @@ export default function TaskForm(props: TaskFormProps) {
           className={inputClasses}
           onChange={(e) => setStatus(e.target.value as TaskStatus)}
         >
-          {Object.values(TaskStatus).map((status) => (
+          {allowedColumns.map((status) => (
             <option key={status} value={status}>
               {getStatusName(status)}
             </option>
