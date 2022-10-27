@@ -1,7 +1,6 @@
-import React, { useReducer, useEffect, useState } from "react";
+import React, { useReducer } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import TaskList from "../../components/task-list/TaskList";
-import { TransitionBoard, TRANSITION_BOARD } from "../../mock-data/settings";
 import { TASKS } from "../../mock-data/tasks";
 import { TaskModel, TaskStatus } from "../../models/TaskModel";
 import {
@@ -12,8 +11,7 @@ import {
   taskReducer,
 } from "./utils";
 import settingsIcon from "../../assets/settings.svg";
-import Modal from "../../components/modal/Modal";
-import TaskForm from "../../components/task-form/TaskForm";
+import { useSettings } from "../../context/settingsContext";
 
 export const TasksBoard = () => {
   // reducer for tasks
@@ -21,15 +19,7 @@ export const TasksBoard = () => {
     taskReducer,
     groupTasksByStatus(sortTasksByPriority(TASKS))
   );
-
-  const [isFormOpen, setIsFormOpen] = useState(false);
-
-  // state for transition board
-  const [boardSettings, setSettings] = useState<TransitionBoard>();
-
-  useEffect(() => {
-    setSettings(TRANSITION_BOARD);
-  }, []);
+  const boardSettings = useSettings();
 
   const handleReorder = (result: DropResult) => {
     dispatch({
