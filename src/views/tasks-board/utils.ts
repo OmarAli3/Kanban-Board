@@ -42,6 +42,7 @@ export const reorderTasks = (
   // Add the task to the destination column
   const newSourceColumn = sourceColumn.slice();
   newSourceColumn.splice(result.source.index, 1);
+  task.status = destinationColumnId;
 
   // Add the task to the destination column
   // Sort the destination column by priority after adding the task
