@@ -41,6 +41,7 @@ export default function TaskForm(props: TaskFormProps) {
     transitionBoard!,
     isEdit ? columnId : undefined
   );
+  allowedColumns.unshift(columnId);
   return (
     <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-4">
       <div className="flex flex-col gap-2">
