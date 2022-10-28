@@ -4,7 +4,11 @@ import { TasksBoard } from "./views/tasks-board/TasksBoard";
 function App() {
   return (
     <SettingsContextProvider>
-      <TasksBoard />
+      <div className="w-full flex">
+        <div className="mx-auto">
+          <TasksBoard />
+        </div>
+      </div>
     </SettingsContextProvider>
   );
 }

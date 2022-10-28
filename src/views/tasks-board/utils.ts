@@ -27,8 +27,8 @@ export const reorderTasks = (
   const { source, destination } = result;
   if (!destination) return;
 
-  const sourceColumn = tasks[source.droppableId];
-  const destinationColumn = tasks[destination.droppableId];
+  const sourceColumn = tasks[source.droppableId] || [];
+  const destinationColumn = tasks[destination.droppableId] || [];
   const sourceColumnId = source.droppableId as TaskStatus;
   const destinationColumnId = destination.droppableId as TaskStatus;
 
