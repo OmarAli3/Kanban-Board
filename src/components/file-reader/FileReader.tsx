@@ -29,15 +29,17 @@ export default function JSONFileReader(props: JSONFileReaderProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="relative overflow-hidden bg-blue-600 text-white rounded-md p-2 shadow-sm hover:shadow-md text-xl font-medium">
+      <button
+        className="flex items-center justify-center focus:outline-none"
+      >
+        Import
+      </button>
       <input
         type="file"
         accept=".json"
         onChange={handleFileChange}
-        className="relative text-white rounded-md p-2 shadow-sm hover:shadow-md text-xl font-medium w-[8ch]
-                   after:content-['Import'] after:absolute after:inset-0 after:cursor-pointer after:z-10 after:bg-blue-600 
-                   after:flex after:items-center after:justify-center      
-                   "
+        className="absolute inset-0 opacity-0 cursor-pointer"
       />
     </div>
   );
