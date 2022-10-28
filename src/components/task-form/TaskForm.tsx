@@ -12,7 +12,7 @@ type TaskFormProps = {
 };
 export default function TaskForm(props: TaskFormProps) {
   const { task, columnId, onSubmit, onCancel } = props;
-  const boardSettings = useSettings();
+  const { transitionBoard } = useSettings();
 
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
@@ -38,7 +38,7 @@ export default function TaskForm(props: TaskFormProps) {
 
   const isEdit = !!task;
   const allowedColumns = getAllowedColumns(
-    boardSettings!,
+    transitionBoard!,
     isEdit ? columnId : undefined
   );
   return (

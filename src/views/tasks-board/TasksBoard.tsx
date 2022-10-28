@@ -12,6 +12,8 @@ import {
 } from "./utils";
 import settingsIcon from "../../assets/settings.svg";
 import { useSettings } from "../../context/settingsContext";
+import SettingsForm from "../../components/settings-form/SettingsForm";
+import Modal from "../../components/modal/Modal";
 
 export const TasksBoard = () => {
   // reducer for tasks
@@ -19,7 +21,8 @@ export const TasksBoard = () => {
     taskReducer,
     groupTasksByStatus(sortTasksByPriority(TASKS))
   );
-  const boardSettings = useSettings();
+  const { transitionBoard } = useSettings();
+  const [showSettings, setShowSettings] = React.useState(false);
 
   const handleReorder = (result: DropResult) => {
     dispatch({
@@ -27,7 +30,7 @@ export const TasksBoard = () => {
       payload: {
         result,
         tasks,
-        transitionBoard: boardSettings!,
+        transitionBoard: transitionBoard!,
       },
     });
   };
@@ -78,7 +81,7 @@ export const TasksBoard = () => {
                 <TaskList
                   status={status as TaskStatus}
                   tasks={tasks[status] || []}
-                  allowedSources={boardSettings?.[status as TaskStatus] || []}
+                  allowedSources={transitionBoard?.[status as TaskStatus] || []}
                   onAddTask={handleAddTask}
                   onDeleteTask={handleDeleteTask}
                   onEditTask={handleEditTask}
@@ -87,9 +90,20 @@ export const TasksBoard = () => {
             )}
         </div>
       </DragDropContext>
-      <button className="w-12 h-12 fixed bottom-4 left-2 bg-white rounded-full shadow-md">
+      <button
+        type="button"
+        className="w-12 h-12 fixed bottom-4 left-2 bg-white rounded-full shadow-md"
+        onClick={() => setShowSettings(true)}
+      >
         <img src={settingsIcon} alt="settings icon" />
       </button>
+      <Modal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        title=""
+      >
+        <SettingsForm onCancel={() => setShowSettings(false)} />
+      </Modal>
     </div>
   );
 };
