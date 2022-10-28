@@ -1,6 +1,7 @@
 import { DropResult } from "react-beautiful-dnd";
 import { TransitionBoard } from "../../mock-data/settings";
 import { TaskModel, TaskStatus } from "../../models/TaskModel";
+import { exportDataAsJSON } from "../../utils";
 
 export type Hash<T> = { [key: string]: T };
 
@@ -69,6 +70,7 @@ export enum TaskActions {
   UPDATE_TASK = "UPDATE_TASK",
   DELETE_TASK = "DELETE_TASK",
   REORDER_TASKS = "REORDER_TASKS",
+  IMPORT_TASKS = "IMPORT_TASKS",
 }
 
 export type TaskAction =
@@ -91,6 +93,10 @@ export type TaskAction =
         tasks: Hash<TaskModel[]>;
         transitionBoard: TransitionBoard;
       };
+    }
+  | {
+      type: TaskActions.IMPORT_TASKS;
+      payload: { tasks: TaskModel[] };
     };
 
 export const taskReducer = (state: Hash<TaskModel[]>, action: TaskAction) => {
@@ -100,13 +106,14 @@ export const taskReducer = (state: Hash<TaskModel[]>, action: TaskAction) => {
 
       return {
         ...state,
-        [columnId]: sortTasksByPriority([...state[columnId], task]),
+        [columnId]: sortTasksByPriority([...(state[columnId] || []), task]),
       };
     }
     case TaskActions.UPDATE_TASK: {
       const { columnId, taskId, data } = action.payload;
-      const task = state[columnId].find((task) => task.id === taskId);
-      Object.assign(task!, data);
+      const task = state[columnId]?.find((task) => task.id === taskId);
+      if (!task) return state;
+      Object.assign(task, data);
       if (!!data.status && data.status !== columnId) {
         const newColumn = state[data.status];
         const newSourceColumn = state[columnId]?.filter(
@@ -136,7 +143,20 @@ export const taskReducer = (state: Hash<TaskModel[]>, action: TaskAction) => {
       const { result, tasks, transitionBoard } = action.payload;
       return reorderTasks(result, tasks, transitionBoard) || state;
     }
+    case TaskActions.IMPORT_TASKS: {
+      const { tasks } = action.payload;
+      return groupTasksByStatus(tasks);
+    }
     default:
       return state;
   }
+};
+
+// handle export tasks as json
+export const handleExportTasks = (groupedTasks: Hash<TaskModel[]>) => {
+  const tasks = Object.values(groupedTasks).reduce(
+    (tasks, column) => [...tasks, ...column],
+    []
+  );
+  exportDataAsJSON(tasks);
 };

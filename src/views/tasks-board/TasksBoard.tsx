@@ -5,6 +5,7 @@ import { TASKS } from "../../mock-data/tasks";
 import { TaskModel, TaskStatus } from "../../models/TaskModel";
 import {
   groupTasksByStatus,
+  handleExportTasks,
   Hash,
   sortTasksByPriority,
   TaskActions,
@@ -14,6 +15,8 @@ import settingsIcon from "../../assets/settings.svg";
 import { useSettings } from "../../context/settingsContext";
 import SettingsForm from "../../components/settings-form/SettingsForm";
 import Modal from "../../components/modal/Modal";
+import { exportDataAsJSON } from "../../utils";
+import JSONFileReader from "../../components/file-reader/FileReader";
 
 export const TasksBoard = () => {
   // reducer for tasks
@@ -60,16 +63,27 @@ export const TasksBoard = () => {
     });
   };
 
+  const handleImportTasks = (data: string) => {
+    const parsedData = JSON.parse(data);
+    if (Array.isArray(parsedData)) {
+      const tasksData = parsedData.map((task: object) => new TaskModel(task));
+
+      dispatch({
+        type: TaskActions.IMPORT_TASKS,
+        payload: { tasks: tasksData },
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col">
       <header className="w-full flex gap-6 pt-6 pl-4 md:pl-6 lg:pl-8">
+        <JSONFileReader onContentReady={handleImportTasks} />
         <button
-          className="bg-blue-600 text-white rounded-md p-2 shadow-sm hover:shadow-md text-xl font-medium"
-          onClick={() => {}}
+          type="button"
+          className="bg-gray-100 border border-gray-200 rounded-md px-2 shadow-sm hover:shadow text-xl font-medium"
+          onClick={() => handleExportTasks(tasks)}
         >
-          Import
-        </button>
-        <button className="bg-gray-100 border border-gray-200 rounded-md px-2 shadow-sm hover:shadow text-xl font-medium">
           Export
         </button>
       </header>
