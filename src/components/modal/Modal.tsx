@@ -22,7 +22,7 @@ function Modal(props: ModalProps) {
         className="absolute inset-0 bg-gray-800 bg-opacity-50"
         onClick={onClose}
       ></div>
-      <div className="relative bg-white rounded-md shadow-lg p-4 max-w-2xl w-full">
+      <div className="relative bg-white rounded-md shadow-lg p-4 max-w-2xl w-full max-h-full overflow-auto">
         {children}
       </div>
     </div>
