@@ -30,7 +30,7 @@ export default function TaskList(props: TaskListProps) {
     if (formData) {
       onEditTask(formData.id, status, data);
     } else {
-      onAddTask(data, status);
+      onAddTask(data, data.status || status);
     }
     closeForm();
   };
