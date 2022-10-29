@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSettings } from "../../context/settingsContext";
 import { TaskStatus } from "../../models/TaskModel";
 import { getStatusName } from "../task-list/utils";
+import { isValidBoard } from "./util";
 
 type SettingsFormProps = {
   onCancel: () => void;
@@ -47,6 +48,12 @@ export default function SettingsForm(props: SettingsFormProps) {
     onCancel();
   };
 
+  const isSaveDisabled = () => {
+    return (
+      JSON.stringify(transitionBoardState) ===
+        JSON.stringify(transitionBoard) || !isValidBoard(transitionBoardState)
+    );
+  };
   return (
     <div className="flex justify-center">
       <div className="overflow-auto">
@@ -54,11 +61,11 @@ export default function SettingsForm(props: SettingsFormProps) {
           <p className="pt-4 max-w-[30rem]">
             Here you can customize your own state machine transitions with each
             row as the source and each column as the destination.
-            <div className="text-sm text-gray-500">
+            <span className="block text-sm text-gray-500">
               <span className="font-medium">**Note:</span> You can't have a
               transition from a column to itself because each column is ordered
               by priority.
-            </div>
+            </span>
           </p>
           <div
             className="grid gap-2 items-center rounded-md border border-gray-100 overflow-auto "
@@ -109,10 +116,7 @@ export default function SettingsForm(props: SettingsFormProps) {
           </div>
           <button
             type="submit"
-            disabled={
-              JSON.stringify(transitionBoardState) ===
-              JSON.stringify(transitionBoard)
-            }
+            disabled={isSaveDisabled()}
             className="bg-blue-600 disabled:bg-gray-400 text-white rounded-md p-1 shadow-sm hover:shadow-md text-lg font-medium"
           >
             Save

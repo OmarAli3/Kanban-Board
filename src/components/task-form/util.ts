@@ -5,6 +5,7 @@ export const filterOutEnumNumbers = (enumObj: any) => {
   return Object.keys(enumObj).filter((key) => isNaN(Number(key)));
 };
 
+// Get all statuses that can be reached from the source status
 export const getAllowedColumns = (
   transitionBoard: TransitionBoard,
   sourceColumn?: TaskStatus
